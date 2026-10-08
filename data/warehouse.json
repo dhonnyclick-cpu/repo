@@ -1,0 +1,32 @@
+[
+  {
+    "id": "wh-001",
+    "code": "GR-001",
+    "name": "Gudang Pusat",
+    "address": "Jl. Raya Industri No. 10, Jakarta",
+    "manager": "Budi Santoso",
+    "phone": "021-555-0101",
+    "capacity": 5000,
+    "created_at": "2026-10-08T13:48:01.297497"
+  },
+  {
+    "id": "wh-002",
+    "code": "GR-002",
+    "name": "Gudang Cabang Bekasi",
+    "address": "Jl. Industri Raya No. 88, Bekasi",
+    "manager": "Siti Rahayu",
+    "phone": "021-555-0202",
+    "capacity": 3000,
+    "created_at": "2026-10-08T13:48:01.297522"
+  },
+  {
+    "id": "wh-003",
+    "code": "GR-003",
+    "name": "Gudang Surabaya",
+    "address": "Jl. Rungkut Industri No. 5, Surabaya",
+    "manager": "Andi Wijaya",
+    "phone": "031-555-0303",
+    "capacity": 2500,
+    "created_at": "2026-10-08T13:48:01.297524"
+  }
+]

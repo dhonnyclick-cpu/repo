@@ -1,0 +1,82 @@
+[
+  {
+    "id": "tx-001",
+    "type": "IN",
+    "product_id": "prd-001",
+    "quantity": 25,
+    "notes": "Stok awal",
+    "timestamp": "2026-09-08T13:48:01.297554"
+  },
+  {
+    "id": "tx-002",
+    "type": "IN",
+    "product_id": "prd-002",
+    "quantity": 40,
+    "notes": "Stok awal",
+    "timestamp": "2026-09-09T13:48:01.297554"
+  },
+  {
+    "id": "tx-003",
+    "type": "IN",
+    "product_id": "prd-003",
+    "quantity": 3,
+    "notes": "Stok awal",
+    "timestamp": "2026-09-10T13:48:01.297554"
+  },
+  {
+    "id": "tx-004",
+    "type": "IN",
+    "product_id": "prd-004",
+    "quantity": 120,
+    "notes": "Stok awal",
+    "timestamp": "2026-09-11T13:48:01.297554"
+  },
+  {
+    "id": "tx-005",
+    "type": "IN",
+    "product_id": "prd-005",
+    "quantity": 80,
+    "notes": "Stok awal",
+    "timestamp": "2026-09-12T13:48:01.297554"
+  },
+  {
+    "id": "tx-006",
+    "type": "IN",
+    "product_id": "prd-006",
+    "quantity": 15,
+    "notes": "Stok awal",
+    "timestamp": "2026-09-13T13:48:01.297554"
+  },
+  {
+    "id": "tx-007",
+    "type": "IN",
+    "product_id": "prd-007",
+    "quantity": 10,
+    "notes": "Stok awal",
+    "timestamp": "2026-09-14T13:48:01.297554"
+  },
+  {
+    "id": "tx-008",
+    "type": "IN",
+    "product_id": "prd-008",
+    "quantity": 8,
+    "notes": "Stok awal",
+    "timestamp": "2026-09-15T13:48:01.297554"
+  },
+  {
+    "id": "tx-009",
+    "type": "IN",
+    "product_id": "prd-009",
+    "quantity": 50,
+    "notes": "Stok awal",
+    "timestamp": "2026-09-16T13:48:01.297554"
+  },
+  {
+    "id": "tx-010",
+    "type": "IN",
+    "product_id": "prd-010",
+    "quantity": 60,
+    "notes": "Stok awal",
+    "timestamp": "2026-09-17T13:48:01.297554"
+  }
+]

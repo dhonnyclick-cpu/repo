@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block title %}Dashboard - InvenWarehouse{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-icon blue">
+            <i class="fas fa-boxes"></i>
+        </div>
+        <div class="stat-info">
+            <div class="stat-label">Total Produk</div>
+            <div class="stat-value">{{ stats.total_products }}</div>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon green">
+            <i class="fas fa-cubes"></i>
+        </div>
+        <div class="stat-info">
+            <div class="stat-label">Total Stok</div>
+            <div class="stat-value">{{ stats.total_stock }}</div>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon yellow">
+            <i class="fas fa-exclamation-triangle"></i>
+        </div>
+        <div class="stat-info">
+            <div class="stat-label">Stok Menipis</div>
+            <div class="stat-value">{{ stats.low_stock }}</div>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon red">
+            <i class="fas fa-dollar-sign"></i>
+        </div>
+        <div class="stat-info">
+            <div class="stat-label">Total Nilai (Rp)</div>
+            <div class="stat-value">{{ "{:,.0f}".format(stats.total_value) }}</div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="card col-6">
+        <div class="card-header">
+            <h3 class="card-title"><i class="fas fa-chart-line"></i> Top 10 Stok Barang</h3>
+        </div>
+        <div class="card-body">
+            <canvas id="stockChart"></canvas>
+        </div>
+    </div>
+    <div class="card col-6">
+        <div class="card-header">
+            <h3 class="card-title"><i class="fas fa-tags"></i> Stok per Kategori</h3>
+        </div>
+        <div class="card-body">
+            <canvas id="categoryChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="card col-12">
+        <div class="card-header">
+            <h3 class="card-title"><i class="fas fa-warehouse"></i> Stok per Gudang</h3>
+        </div>
+        <div class="card-body">
+            <canvas id="warehouseChart"></canvas>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/dashboard-charts.js') }}"></script>
+{% endblock %}

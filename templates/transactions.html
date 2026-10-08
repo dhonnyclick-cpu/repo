@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Riwayat Transaksi{% endblock %}
+{% block page_title %}Riwayat Transaksi Stok{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title"><i class="fas fa-receipt"></i> Semua Transaksi</h3>
+    </div>
+    <div class="card-body">
+        {% if transactions %}
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Tanggal</th>
+                    <th>Tipe</th>
+                    <th>SKU</th>
+                    <th>Produk</th>
+                    <th>Qty</th>
+                    <th>Catatan</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for t in transactions %}
+                <tr>
+                    <td>{{ t.timestamp[:19]|replace('T', ' ') }}</td>
+                    <td>
+                        <span class="badge badge-{{ 'green' if 'IN' in t.type else 'red' if 'OUT' in t.type else 'blue' }}">{{ t.type }}</span>
+                    </td>
+                    <td><code>{{ t.product_sku }}</code></td>
+                    <td>{{ t.product_name }}</td>
+                    <td>{{ t.quantity }}</td>
+                    <td>{{ t.notes }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p class="empty-state">Belum ada transaksi.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

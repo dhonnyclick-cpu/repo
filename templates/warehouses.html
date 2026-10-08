@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Data Gudang{% endblock %}
+{% block page_title %}Data Gudang (Warehouse){% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header flex-between">
+        <h3 class="card-title"><i class="fas fa-warehouse"></i> Daftar Gudang</h3>
+        <a href="{{ url_for('add_warehouse') }}" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Tambah Gudang
+        </a>
+    </div>
+    <div class="card-body">
+        {% if warehouses %}
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Kode</th>
+                    <th>Nama Gudang</th>
+                    <th>Alamat</th>
+                    <th>Manager</th>
+                    <th>Telepon</th>
+                    <th>Kapasitas</th>
+                    <th>Jml Produk</th>
+                    <th>Total Stok</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for wh in warehouses %}
+                <tr>
+                    <td><code>{{ wh.code }}</code></td>
+                    <td>{{ wh.name }}</td>
+                    <td>{{ wh.address }}</td>
+                    <td>{{ wh.manager }}</td>
+                    <td>{{ wh.phone }}</td>
+                    <td>{{ wh.capacity }}</td>
+                    <td>{{ wh.product_count }}</td>
+                    <td>{{ wh.total_stock }}</td>
+                    <td class="actions">
+                        <a href="{{ url_for('edit_warehouse', wh_id=wh.id) }}" class="btn btn-sm btn-warning" title="Edit"><i class="fas fa-edit"></i></a>
+                        <form method="POST" action="{{ url_for('delete_warehouse', wh_id=wh.id) }}" style="display:inline" onsubmit="return confirm('Hapus gudang ini?')">
+                            <button type="submit" class="btn btn-sm btn-danger" title="Hapus"><i class="fas fa-trash"></i></button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p class="empty-state">Belum ada data gudang. <a href="{{ url_for('add_warehouse') }}">Tambah gudang pertama</a>.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Edit' if warehouse else 'Tambah' }} Gudang{% endblock %}
+{% block page_title %}{{ 'Edit' if warehouse else 'Tambah' }} Gudang{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title"><i class="fas fa-{{ 'edit' if warehouse else 'plus' }}"></i> {{ 'Edit' if warehouse else 'Tambah' }} Gudang</h3>
+    </div>
+    <div class="card-body">
+        <form method="POST" class="form-grid">
+            <div class="form-group">
+                <label>Kode Gudang <span class="required">*</span></label>
+                <input type="text" name="code" value="{{ warehouse.code if warehouse else '' }}" required placeholder="GR-001">
+            </div>
+            <div class="form-group">
+                <label>Nama Gudang <span class="required">*</span></label>
+                <input type="text" name="name" value="{{ warehouse.name if warehouse else '' }}" required placeholder="Nama Gudang">
+            </div>
+            <div class="form-group">
+                <label>Alamat</label>
+                <textarea name="address" rows="2" placeholder="Alamat lengkap">{{ warehouse.address if warehouse else '' }}</textarea>
+            </div>
+            <div class="form-group">
+                <label>Manager</label>
+                <input type="text" name="manager" value="{{ warehouse.manager if warehouse else '' }}" placeholder="Nama manager">
+            </div>
+            <div class="form-group">
+                <label>Telepon</label>
+                <input type="tel" name="phone" value="{{ warehouse.phone if warehouse else '' }}" placeholder="021-1234567">
+            </div>
+            <div class="form-group">
+                <label>Kapasitas Maksimal</label>
+                <input type="number" name="capacity" value="{{ warehouse.capacity if warehouse else 0 }}" min="0">
+            </div>
+            <div class="form-actions full-width">
+                <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Simpan</button>
+                <a href="{{ url_for('warehouses') }}" class="btn btn-secondary"><i class="fas fa-times"></i> Batal</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

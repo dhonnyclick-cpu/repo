@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Edit' if product else 'Tambah' }} Produk{% endblock %}
+{% block page_title %}{{ 'Edit' if product else 'Tambah' }} Produk{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title"><i class="fas fa-{{ 'edit' if product else 'plus' }}"></i> {{ 'Edit' if product else 'Tambah' }} Produk</h3>
+    </div>
+    <div class="card-body">
+        <form method="POST" enctype="multipart/form-data" class="form-grid">
+            <div class="form-group">
+                <label>SKU <span class="required">*</span></label>
+                <input type="text" name="sku" value="{{ product.sku if product else '' }}" required placeholder="PRD-001">
+            </div>
+            <div class="form-group">
+                <label>Nama Produk <span class="required">*</span></label>
+                <input type="text" name="name" value="{{ product.name if product else '' }}" required placeholder="Nama produk">
+            </div>
+            <div class="form-group">
+                <label>Kategori</label>
+                <input type="text" name="category" value="{{ product.category if product else '' }}" placeholder="Elektronik, Makanan, dll">
+            </div>
+            <div class="form-group">
+                <label>Satuan</label>
+                <select name="unit">
+                    <option value="pcs" {{ 'selected' if product and product.unit == 'pcs' }}>pcs</option>
+                    <option value="box" {{ 'selected' if product and product.unit == 'box' }}>box</option>
+                    <option value="kg" {{ 'selected' if product and product.unit == 'kg' }}>kg</option>
+                    <option value="liter" {{ 'selected' if product and product.unit == 'liter' }}>liter</option>
+                    <option value="meter" {{ 'selected' if product and product.unit == 'meter' }}>meter</option>
+                    <option value="pack" {{ 'selected' if product and product.unit == 'pack' }}>pack</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Harga (Rp) <span class="required">*</span></label>
+                <input type="number" name="price" value="{{ product.price if product else 0 }}" required min="0" step="0.01">
+            </div>
+            <div class="form-group">
+                <label>Stok Awal <span class="required">*</span></label>
+                <input type="number" name="stock" value="{{ product.stock if product else 0 }}" required min="0">
+            </div>
+            <div class="form-group">
+                <label>Stok Minimum</label>
+                <input type="number" name="min_stock" value="{{ product.min_stock if product else 5 }}" min="0">
+            </div>
+            <div class="form-group">
+                <label>Gudang</label>
+                <select name="warehouse_id">
+                    <option value="">-- Pilih Gudang --</option>
+                    {% for wh in warehouses %}
+                    <option value="{{ wh.id }}" {{ 'selected' if product and product.warehouse_id == wh.id }}>{{ wh.name }} ({{ wh.code }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Lokasi Rak</label>
+                <input type="text" name="location" value="{{ product.location if product else '' }}" placeholder="Rak A-01">
+            </div>
+            <div class="form-group">
+                <label>Gambar Produk</label>
+                <input type="file" name="image" accept="image/*">
+                {% if product and product.image %}
+                <div class="current-image">
+                    <img src="{{ url_for('uploaded_file', filename=product.image) }}" alt="Current" class="thumb">
+                    <small>Gambar saat ini</small>
+                </div>
+                {% endif %}
+            </div>
+            <div class="form-group full-width">
+                <label>Deskripsi</label>
+                <textarea name="description" rows="3" placeholder="Deskripsi produk...">{{ product.description if product else '' }}</textarea>
+            </div>
+            <div class="form-actions full-width">
+                <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Simpan</button>
+                <a href="{{ url_for('products') }}" class="btn btn-secondary"><i class="fas fa-times"></i> Batal</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

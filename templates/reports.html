@@ -1,0 +1,171 @@
+{% extends "base.html" %}
+{% block title %}Laporan Data Warehouse{% endblock %}
+{% block page_title %}Laporan Data Warehouse (Analitik){% endblock %}
+
+{% block content %}
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-icon blue"><i class="fas fa-box"></i></div>
+        <div class="stat-info">
+            <div class="stat-label">Total Produk</div>
+            <div class="stat-value">{{ total_products }}</div>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon green"><i class="fas fa-cubes"></i></div>
+        <div class="stat-info">
+            <div class="stat-label">Total Stok</div>
+            <div class="stat-value">{{ total_stock }}</div>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon red"><i class="fas fa-dollar-sign"></i></div>
+        <div class="stat-info">
+            <div class="stat-label">Nilai Persediaan (Rp)</div>
+            <div class="stat-value">{{ "{:,.0f}".format(total_value) }}</div>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon yellow"><i class="fas fa-exclamation"></i></div>
+        <div class="stat-info">
+            <div class="stat-label">Stok Menipis</div>
+            <div class="stat-value">{{ low_stock_count }}</div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="card col-6">
+        <div class="card-header">
+            <h3 class="card-title"><i class="fas fa-chart-pie"></i> Distribusi per Kategori (DWH View)</h3>
+        </div>
+        <div class="card-body">
+            <canvas id="dwhCatChart"></canvas>
+        </div>
+    </div>
+    <div class="card col-6">
+        <div class="card-header">
+            <h3 class="card-title"><i class="fas fa-building"></i> Distribusi per Gudang (DWH View)</h3>
+        </div>
+        <div class="card-body">
+            <canvas id="dwhWhChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="card col-6">
+        <div class="card-header">
+            <h3 class="card-title"><i class="fas fa-triangle-exclamation"></i> Low Stock Alert</h3>
+        </div>
+        <div class="card-body">
+            {% if low_stock_items %}
+            <table class="data-table">
+                <thead><tr><th>SKU</th><th>Nama</th><th>Stok</th><th>Min</th></tr></thead>
+                <tbody>
+                    {% for p in low_stock_items %}
+                    <tr>
+                        <td><code>{{ p.sku }}</code></td>
+                        <td>{{ p.name }}</td>
+                        <td>{{ p.stock }}</td>
+                        <td>{{ p.min_stock }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p class="empty-state">Semua stok aman.</p>
+            {% endif %}
+        </div>
+    </div>
+    <div class="card col-6">
+        <div class="card-header">
+            <h3 class="card-title"><i class="fas fa-ban"></i> Out of Stock</h3>
+        </div>
+        <div class="card-body">
+            {% if out_of_stock %}
+            <table class="data-table">
+                <thead><tr><th>SKU</th><th>Nama</th><th>Stok</th></tr></thead>
+                <tbody>
+                    {% for p in out_of_stock %}
+                    <tr>
+                        <td><code>{{ p.sku }}</code></td>
+                        <td>{{ p.name }}</td>
+                        <td>0</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p class="empty-state">Tidak ada barang kosong.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="card col-12">
+        <div class="card-header">
+            <h3 class="card-title"><i class="fas fa-clock"></i> 50 Transaksi Terbaru (Fact Transactions)</h3>
+        </div>
+        <div class="card-body">
+            {% if recent_transactions %}
+            <table class="data-table">
+                <thead><tr><th>Tanggal</th><th>Tipe</th><th>Produk</th><th>Qty</th><th>Catatan</th></tr></thead>
+                <tbody>
+                    {% for t in recent_transactions %}
+                    <tr>
+                        <td>{{ t.timestamp[:19]|replace('T', ' ') }}</td>
+                        <td><span class="badge">{{ t.type }}</span></td>
+                        <td>{{ t.product_name }}</td>
+                        <td>{{ t.quantity }}</td>
+                        <td>{{ t.notes }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p class="empty-state">Belum ada transaksi.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Simple charts using Chart.js from CDN already in base
+const catCtx = document.getElementById('dwhCatChart');
+new Chart(catCtx, {
+    type: 'doughnut',
+    data: {
+        labels: [{% for k,v in categories.items() %}"{{ k }}",{% endfor %}],
+        datasets: [{
+            data: [{% for k,v in categories.items() %}{{ v.stock }},{% endfor %}],
+            borderWidth: 1
+        }]
+    },
+    options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+});
+
+const whCtx = document.getElementById('dwhWhChart');
+const whLabels = [];
+const whData = [];
+{% for wid, w in wh_stats.items() %}
+whLabels.push("{{ w.code }} - {{ w.name[:10] }}");
+whData.push({{ w.stock }});
+{% endfor %}
+new Chart(whCtx, {
+    type: 'bar',
+    data: {
+        labels: whLabels,
+        datasets: [{
+            label: 'Total Stok',
+            data: whData,
+            borderWidth: 1
+        }]
+    },
+    options: { responsive: true, scales: { y: { beginAtZero: true } } }
+});
+</script>
+{% endblock %}

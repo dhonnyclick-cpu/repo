@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}Detail Produk - {{ product.name }}{% endblock %}
+{% block page_title %}Detail Produk{% endblock %}
+
+{% block content %}
+<div class="detail-layout">
+    <div class="card detail-card">
+        <div class="detail-img-wrap">
+            {% if product.image %}
+            <img src="{{ url_for('uploaded_file', filename=product.image) }}" alt="{{ product.name }}" class="detail-img">
+            {% else %}
+            <div class="detail-placeholder"><i class="fas fa-image"></i><br>Tidak ada gambar</div>
+            {% endif %}
+        </div>
+        <div class="detail-info">
+            <h2>{{ product.name }}</h2>
+            <div class="detail-meta">
+                <span class="badge badge-blue">{{ product.sku }}</span>
+                <span class="badge badge-green">{{ product.category }}</span>
+                <span class="badge {% if product.stock == 0 %}badge-red{% elif product.stock <= product.min_stock %}badge-yellow{% else %}badge-green{% endif %}">
+                    {{ product.stock }} {{ product.unit }} tersedia
+                </span>
+            </div>
+            <table class="detail-table">
+                <tr><th>Harga</th><td>Rp {{ "{:,.0f}".format(product.price) }}</td></tr>
+                <tr><th>Nilai Stok</th><td>Rp {{ "{:,.0f}".format(product.price * product.stock) }}</td></tr>
+                <tr><th>Stok Minimum</th><td>{{ product.min_stock }} {{ product.unit }}</td></tr>
+                <tr><th>Satuan</th><td>{{ product.unit }}</td></tr>
+                <tr><th>Gudang</th><td>{{ warehouse.name if warehouse else '-' }} ({{ warehouse.code if warehouse else '-' }})</td></tr>
+                <tr><th>Lokasi Rak</th><td>{{ product.location or '-' }}</td></tr>
+                <tr><th>Deskripsi</th><td>{{ product.description or '-' }}</td></tr>
+            </table>
+            <div class="detail-actions">
+                <a href="{{ url_for('edit_product', product_id=product.id) }}" class="btn btn-warning"><i class="fas fa-edit"></i> Edit</a>
+                <a href="{{ url_for('products') }}" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Kembali</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title"><i class="fas fa-history"></i> Riwayat Mutasi Stok</h3>
+        </div>
+        <div class="card-body">
+            {% if transactions %}
+            <table class="data-table">
+                <thead>
+                    <tr><th>Tanggal</th><th>Tipe</th><th>Jumlah</th><th>Catatan</th></tr>
+                </thead>
+                <tbody>
+                    {% for t in transactions %}
+                    <tr>
+                        <td>{{ t.timestamp[:19]|replace('T', ' ') }}</td>
+                        <td><span class="badge badge-{{ 'green' if 'IN' in t.type else 'red' if 'OUT' in t.type else 'blue' }}">{{ t.type }}</span></td>
+                        <td>{{ t.quantity }}</td>
+                        <td>{{ t.notes }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p class="empty-state">Belum ada transaksi untuk produk ini.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

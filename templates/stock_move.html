@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% block title %}Mutasi Stok{% endblock %}
+{% block page_title %}Mutasi Stok{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title"><i class="fas fa-exchange-alt"></i> Catat Pergerakan Stok</h3>
+    </div>
+    <div class="card-body">
+        <form method="POST" class="form-grid" id="stockMoveForm">
+            <div class="form-group full-width">
+                <label>Produk <span class="required">*</span></label>
+                <select name="product_id" id="productSelect" required>
+                    <option value="">-- Pilih Produk --</option>
+                    {% for p in products %}
+                    <option value="{{ p.id }}" data-stock="{{ p.stock }}" data-unit="{{ p.unit }}" data-wh="{{ p.warehouse_id }}">
+                        {{ p.sku }} - {{ p.name }} (Stok: {{ p.stock }} {{ p.unit }})
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Jenis Mutasi <span class="required">*</span></label>
+                <select name="type" id="typeSelect" required>
+                    <option value="IN">Stok Masuk (Barang Masuk)</option>
+                    <option value="OUT">Stok Keluar (Barang Keluar)</option>
+                    <option value="TRANSFER">Transfer Antar Gudang</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Jumlah <span class="required">*</span></label>
+                <input type="number" name="quantity" id="quantityInput" required min="1" value="1">
+                <small id="stockHint" class="hint"></small>
+            </div>
+            <div class="form-group" id="fromWhGroup" style="display:none">
+                <label>Dari Gudang</label>
+                <select name="from_warehouse">
+                    {% for wh in warehouses %}
+                    <option value="{{ wh.id }}">{{ wh.name }} ({{ wh.code }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group" id="toWhGroup" style="display:none">
+                <label>Ke Gudang</label>
+                <select name="to_warehouse">
+                    {% for wh in warehouses %}
+                    <option value="{{ wh.id }}">{{ wh.name }} ({{ wh.code }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group full-width">
+                <label>Catatan</label>
+                <textarea name="notes" rows="2" placeholder="Keterangan mutasi..."></textarea>
+            </div>
+            <div class="form-actions full-width">
+                <button type="submit" class="btn btn-primary"><i class="fas fa-check"></i> Catat Mutasi</button>
+                <a href="{{ url_for('products') }}" class="btn btn-secondary">Kembali</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const typeSelect = document.getElementById('typeSelect');
+const fromWhGroup = document.getElementById('fromWhGroup');
+const toWhGroup = document.getElementById('toWhGroup');
+const productSelect = document.getElementById('productSelect');
+const quantityInput = document.getElementById('quantityInput');
+const stockHint = document.getElementById('stockHint');
+
+function updateFields() {
+    const type = typeSelect.value;
+    const isTransfer = type === 'TRANSFER';
+    fromWhGroup.style.display = isTransfer ? 'block' : 'none';
+    toWhGroup.style.display = isTransfer ? 'block' : 'none';
+
+    if (isTransfer) {
+        // Set "dari gudang" to product's current warehouse
+        const opt = productSelect.options[productSelect.selectedIndex];
+        if (opt && opt.dataset.wh) {
+            document.querySelector('#fromWhGroup select').value = opt.dataset.wh;
+        }
+    }
+    updateStockHint();
+}
+
+function updateStockHint() {
+    const opt = productSelect.options[productSelect.selectedIndex];
+    if (!opt || !opt.dataset.stock) {
+        stockHint.textContent = '';
+        return;
+    }
+    const stock = parseInt(opt.dataset.stock);
+    const unit = opt.dataset.unit || '';
+    stockHint.textContent = 'Stok tersedia: ' + stock + ' ' + unit;
+}
+
+typeSelect.addEventListener('change', updateFields);
+productSelect.addEventListener('change', updateFields);
+updateFields();
+</script>
+{% endblock %}

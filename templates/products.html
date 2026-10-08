@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block title %}Daftar Produk{% endblock %}
+{% block page_title %}Daftar Produk / Inventori{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header flex-between">
+        <h3 class="card-title"><i class="fas fa-boxes"></i> Semua Produk</h3>
+        <a href="{{ url_for('add_product') }}" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Tambah Produk
+        </a>
+    </div>
+    <div class="card-body">
+        {% if products %}
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Gambar</th>
+                    <th>SKU</th>
+                    <th>Nama</th>
+                    <th>Kategori</th>
+                    <th>Stok</th>
+                    <th>Harga (Rp)</th>
+                    <th>Lokasi</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in products %}
+                <tr>
+                    <td>
+                        {% if p.image %}
+                        <img src="{{ url_for('uploaded_file', filename=p.image) }}" alt="{{ p.name }}" class="thumb">
+                        {% else %}
+                        <div class="thumb-placeholder"><i class="fas fa-image"></i></div>
+                        {% endif %}
+                    </td>
+                    <td><code>{{ p.sku }}</code></td>
+                    <td><a href="{{ url_for('product_detail', product_id=p.id) }}" class="link">{{ p.name }}</a></td>
+                    <td>{{ p.category }}</td>
+                    <td>
+                        <span class="badge {% if p.stock == 0 %}badge-red{% elif p.stock <= p.min_stock %}badge-yellow{% else %}badge-green{% endif %}">
+                            {{ p.stock }} {{ p.unit }}
+                        </span>
+                    </td>
+                    <td>{{ "{:,.0f}".format(p.price) }}</td>
+                    <td>
+                        {% for wh in warehouses %}
+                            {% if wh.id == p.warehouse_id %}{{ wh.name }}{% endif %}
+                        {% endfor %}
+                        <br><small>{{ p.location }}</small>
+                    </td>
+                    <td class="actions">
+                        <a href="{{ url_for('product_detail', product_id=p.id) }}" class="btn btn-sm btn-info" title="Lihat"><i class="fas fa-eye"></i></a>
+                        <a href="{{ url_for('edit_product', product_id=p.id) }}" class="btn btn-sm btn-warning" title="Edit"><i class="fas fa-edit"></i></a>
+                        <form method="POST" action="{{ url_for('delete_product', product_id=p.id) }}" style="display:inline" onsubmit="return confirm('Hapus produk ini?')">
+                            <button type="submit" class="btn btn-sm btn-danger" title="Hapus"><i class="fas fa-trash"></i></button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p class="empty-state">Belum ada produk. <a href="{{ url_for('add_product') }}">Tambah produk pertama</a>.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
